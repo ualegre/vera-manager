@@ -1,0 +1,5 @@
+/target/
+
+!/target/vera_log_reader-*.jar
+/target/vera_log_reader-*-sources.jar
+/target/vera_log_reader-*-javadoc.jar
