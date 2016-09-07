@@ -26,13 +26,13 @@ public abstract class SSHConnection extends Thread{
 	BufferedReader br;
 	int connectionStatus;
 	
-	public SSHConnection( SSHConfigs sshConfigs){
+   public SSHConnection(SSHConfigs sshConfigs){
 		initFinished = false;
 		finalFinished = false;
 		this.sshConfigs = sshConfigs;
 		running = true;
 		connectionStatus = 0;
-	}
+  }
 	
   public int initialize() throws IOException{
 

@@ -2,12 +2,10 @@ package edu.casetools.vera.logreader.ssh;
 
 public class SSHConfigs {
 
-	private String  hostname,username,password;
+	private String  hostname;
+	private String  username;
+	private String  password;
 	private boolean silence;
-	
-	public SSHConfigs(){
-		
-	}
 
 	public String getHostname() {
 		return hostname;

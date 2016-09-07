@@ -17,9 +17,6 @@ public class VeraInterpreter {
 		int id = interpretId(line);
 		data.setId(id);
 		switch(id){ 
-			case 5:
-				
-				break;
 			case 6:
 					data.setVariable(variableInterpreter.translateVariable(line));
 				break;
