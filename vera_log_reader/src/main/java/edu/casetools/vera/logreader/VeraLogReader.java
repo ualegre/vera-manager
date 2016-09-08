@@ -1,16 +1,27 @@
 package edu.casetools.vera.logreader;
-import edu.casetools.vera.logreader.DataManager;
+import edu.casetools.vera.logreader.VeraLogDataManager;
 import edu.casetools.vera.logreader.ssh.SSHConfigs;
 import edu.casetools.vera.logreader.ssh.SSHManager;
 
 public class VeraLogReader {
-	SSHConfigs configs;
-	SSHManager ssh;
-	DataManager dataManager;
+	private SSHConfigs configs;
+	private SSHManager ssh;
+	private VeraLogDataManager dataManager;
 	
-	public VeraLogReader(DataManager dataManager,SSHConfigs configs){
+	public VeraLogReader(){
+		
+	}
+	
+	public VeraLogReader(VeraLogDataManager dataManager,SSHConfigs configs){
 		ssh = new SSHManager(dataManager, configs);
 		this.configs = configs;
+		this.dataManager = dataManager;
+	}
+	
+	public void initialize (VeraLogDataManager dataManager,SSHConfigs configs){
+		ssh = new SSHManager(dataManager, configs);
+		this.configs = configs;
+		this.dataManager = dataManager;
 	}
 	
 	
@@ -47,4 +58,12 @@ public class VeraLogReader {
 		this.ssh = ssh;
 	}
 	
+	public VeraLogDataManager getDataManager() {
+		return dataManager;
+	}
+
+
+	public void setDataManager(VeraLogDataManager dataManager) {
+		this.dataManager = dataManager;
+	}
 }

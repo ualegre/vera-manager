@@ -4,8 +4,8 @@ import edu.casetools.vera.logreader.data.VeraData;
 
 public class VeraInterpreter {
 
-	EventInterpreter eventInterpreter;
-	VariableInterpreter variableInterpreter;
+	private EventInterpreter eventInterpreter;
+	private VariableInterpreter variableInterpreter;
 	
 	public VeraInterpreter(){
 		eventInterpreter	 = new EventInterpreter();

@@ -3,12 +3,12 @@ package edu.casetools.vera.logreader;
 import edu.casetools.vera.logreader.data.VeraData;
 import edu.casetools.vera.logreader.interpreters.VeraInterpreter;
 
-public abstract class DataManager {
+public abstract class VeraLogDataManager {
 
-  	VeraInterpreter 	   interpreter;
+  	protected VeraInterpreter interpreter;
 
 	
-  	public DataManager(){
+  	public VeraLogDataManager(){
   		interpreter = new VeraInterpreter();
   	}
   	

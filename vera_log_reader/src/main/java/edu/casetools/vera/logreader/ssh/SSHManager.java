@@ -10,7 +10,7 @@ import com.sshtools.j2ssh.authentication.AuthenticationProtocolState;
 import com.sshtools.j2ssh.authentication.PasswordAuthenticationClient;
 import com.sshtools.j2ssh.session.SessionChannelClient;
 
-import edu.casetools.vera.logreader.DataManager;
+import edu.casetools.vera.logreader.VeraLogDataManager;
 import edu.casetools.vera.logreader.ssh.exceptions.AuthenticationException;
 import edu.casetools.vera.logreader.ssh.exceptions.PartialAuthenticationException;
 import edu.casetools.vera.logreader.ssh.exceptions.TerminalAllocationException;
@@ -19,11 +19,11 @@ import edu.casetools.vera.logreader.ssh.exceptions.TerminalAllocationException;
 
 public class SSHManager extends Thread{
 	
-	SSHConfigs sshConfigs;
-	SshClient ssh;
-	SessionChannelClient session;
-	BufferedReader br;
-	DataManager dataManager;
+	private SSHConfigs sshConfigs;
+	private SshClient ssh;
+	private SessionChannelClient session;
+	private BufferedReader br;
+	private VeraLogDataManager dataManager;
 	
 	boolean running;
 	boolean initFinished;
@@ -31,7 +31,7 @@ public class SSHManager extends Thread{
 	int connectionStatus;
 	
 	
-   public SSHManager(DataManager dataManager, SSHConfigs sshConfigs){
+   public SSHManager(VeraLogDataManager dataManager, SSHConfigs sshConfigs){
 	   
 		this.sshConfigs = sshConfigs;
 		this.dataManager = dataManager;

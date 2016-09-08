@@ -2,10 +2,10 @@ package edu.casetools.vera.logreader.data;
 
 public class VeraEvent {
 	
-	String device;
-	boolean status;
-	String time;
-	String date;
+	private String device;
+	private boolean status;
+	private String time;
+	private String date;
 	
 	public String getDevice() {
 		return device;
