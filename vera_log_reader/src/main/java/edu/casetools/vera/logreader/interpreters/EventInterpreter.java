@@ -19,11 +19,15 @@ public class EventInterpreter {
 		boolean isOk = true;
 		
 		String value = interpretDevice(line);
-		if(value != null) event.setDevice(interpretDevice(line));
+		if(value != null) {
+			event.setDevice(interpretDevice(line));
+		}
 		else isOk = false;
 		
 		value = interpretValue(line);
-		if(value != null) event.setStatus(value);
+		if(value != null) {
+			event.setStatus(value);
+		}
 		else isOk = false;
 		
 		value = interpretTime(line);
@@ -36,7 +40,9 @@ public class EventInterpreter {
 				event.setTime(time[1]);
 			}
 		}		else isOk = false;
-		if(!isOk) event = null;
+		if(!isOk) {
+			event = null;
+		}
 		return event;
 	}
 	
