@@ -1,3 +1,4 @@
+package edu.casetools.vera.logreader;
 import edu.casetools.vera.logreader.DataManager;
 import edu.casetools.vera.logreader.ssh.SSHConfigs;
 import edu.casetools.vera.logreader.ssh.SSHManager;
