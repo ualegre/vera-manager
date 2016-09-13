@@ -1,10 +1,13 @@
 package edu.casetools.vera.logreader.interpreters;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import edu.casetools.vera.logreader.data.VeraVariable;
 
 public class VariableInterpreter {
  //<Event Description="Tripped by report" Time="14-02-08 11:20:52" Node="2" Device="3" NodeType="ZWaveBinarySensor" NodeDescription="urn:schemas-micasaverde-com:device:MotionSensor:1" CommandClass="30" Command="3" Value="0"/> <0x402>
-
+  private static final Logger LOGGER = Logger.getLogger( VariableInterpreter.class.getName() );
 	
 
 	
@@ -33,7 +36,7 @@ public class VariableInterpreter {
 					return d[1]+"/"+d[0]+"/"+d[2]; 
 
 				}else{
-					System.out.println("Date error: "+date);
+	               LOGGER.log( Level.WARNING, "Date error: "+date);
 				}
 		return null;
 	}

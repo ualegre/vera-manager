@@ -1,7 +1,9 @@
 package edu.casetools.vera.logreader.data;
 
+import java.lang.reflect.Field;
+
 public class VeraVariable {
-	public final String VAR_TRIPPED = "Tripped";
+	public static final String VAR_TRIPPED = "Tripped";
 	private String date;
 	private String time;
 	private String deviceVariable;
@@ -87,9 +89,11 @@ public class VeraVariable {
 	}
 	
 	public boolean isEmpty(){
-		return 	(this.date.equals("") && this.time.equals("") && this.deviceVariable.equals("") 
-				&& this.deviceId.equals("") && this.service.equals("") && this.variable.equals("") 
-				&& this.oldValue.equals("") && this.newValue.equals(""));
+	    boolean result = true;
+	    for(Field field : VeraVariable.class.getFields()){
+	      result = result && "".equals(field.getType().toString());
+	    }
+	    return result;
 
 	}
 	

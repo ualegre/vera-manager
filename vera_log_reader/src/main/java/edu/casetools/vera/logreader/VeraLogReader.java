@@ -1,16 +1,17 @@
 package edu.casetools.vera.logreader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import edu.casetools.vera.logreader.VeraLogDataManager;
 import edu.casetools.vera.logreader.ssh.SSHConfigs;
 import edu.casetools.vera.logreader.ssh.SSHManager;
 
 public class VeraLogReader {
-	private SSHConfigs configs;
-	private SSHManager ssh;
-	private VeraLogDataManager dataManager;
-	
-	public VeraLogReader(){
-		
-	}
+  
+    private static final Logger LOGGER = Logger.getLogger( VeraLogReader.class.getName() );
+	protected SSHConfigs configs;
+	protected SSHManager ssh;
+	protected VeraLogDataManager dataManager;
 	
 	public VeraLogReader(VeraLogDataManager dataManager,SSHConfigs configs){
 		ssh = new SSHManager(dataManager, configs);
@@ -37,8 +38,8 @@ public class VeraLogReader {
 			ssh.terminate();
 			ssh.join();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-				e.printStackTrace();
+            LOGGER.log( Level.SEVERE, "", e );
+            Thread.currentThread().interrupt();
 		}
 	}
 	

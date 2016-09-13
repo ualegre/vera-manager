@@ -14,7 +14,9 @@ public abstract class VeraLogDataManager {
   	
 	public void readAndStoreLine(String line){
 	   VeraData  data = readLine(interpreter, line);
-	   if(data != null) storeData(data);
+	   if(data != null){
+	     storeData(data);
+	   }
 	}
 	
 	private VeraData readLine(VeraInterpreter interpreter, String line) {
@@ -32,7 +34,9 @@ public abstract class VeraLogDataManager {
 			  break;
 		  case 7:
 			  storeVeraEvent(data);
-			  break;    	 
+			  break;   
+		  default:
+		    break;
 		 }
 	}
 	

@@ -1,7 +1,11 @@
 package edu.casetools.vera.logreader.data;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class VeraEvent {
-	
+  
+    private static final Logger LOGGER = Logger.getLogger( VeraEvent.class.getName() );	
 	private String device;
 	private boolean status;
 	private String time;
@@ -18,10 +22,14 @@ public class VeraEvent {
 	}
 	public void setStatus(String state) {
 		if(state!= null){
-			if(state.equalsIgnoreCase("255")) this.status = true;
-			else 							this.status = false;
+			if("255".equalsIgnoreCase(state)){
+			  this.status = true;
+			}
+			else{
+			  this.status = false;
+			}
 		}else{
-			System.out.println("WARNING INVALID EVENT FROM DEVICE "+device);
+		  LOGGER.log( Level.WARNING, "INVALID EVENT FROM DEVICE: "+device);
 		}
 	}
 	public String getTime() {

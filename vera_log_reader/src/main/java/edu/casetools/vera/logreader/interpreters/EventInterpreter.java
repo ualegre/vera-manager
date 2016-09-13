@@ -1,8 +1,11 @@
 package edu.casetools.vera.logreader.interpreters;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import edu.casetools.vera.logreader.data.VeraEvent;
+import edu.casetools.vera.logreader.ssh.SSHManager;
 
 
 
@@ -11,7 +14,7 @@ import edu.casetools.vera.logreader.data.VeraEvent;
 
 public class EventInterpreter {
  //<Event Description="Tripped by report" Time="14-02-08 11:20:52" Node="2" Device="3" NodeType="ZWaveBinarySensor" NodeDescription="urn:schemas-micasaverde-com:device:MotionSensor:1" CommandClass="30" Command="3" Value="0"/> <0x402>
-
+  private static final Logger LOGGER = Logger.getLogger( SSHManager.class.getName() );
 
 	
 	VeraEvent translateEvent(String line){
@@ -34,9 +37,9 @@ public class EventInterpreter {
 		if(value != null){
 			String[] time = value.split(" ");
 			if(time.length > 1){
-				System.out.println("data: "+time[0]);
+			    LOGGER.log( Level.FINEST, "Date: "+time[0]);
 				event.setDate( changeDate(time[0]) );
-				System.out.println("time: "+time[1]);
+                LOGGER.log( Level.FINEST, "Time: "+time[1]);				
 				event.setTime(time[1]);
 			}
 		}		else isOk = false;
@@ -53,7 +56,7 @@ public class EventInterpreter {
 					return d[2]+"-"+d[1]+"-"+d[0]; 
 
 				}else{
-					System.out.println("Date error: "+date);
+	               LOGGER.log( Level.WARNING, "Date error: "+date);
 				}
 		return null;
 	}
@@ -66,7 +69,7 @@ public class EventInterpreter {
 					return m.group(1); 
 
 				}else{
-					System.out.println("No time");
+	               LOGGER.log( Level.WARNING, "No time set");
 				}
 		return null;
 	}
@@ -79,7 +82,7 @@ public class EventInterpreter {
 					return m.group(1); 
 
 				}else{
-					System.out.println("No value: "+line);
+	               LOGGER.log( Level.WARNING, "No value in line: "+line);
 				}
 		return null;
 	}
