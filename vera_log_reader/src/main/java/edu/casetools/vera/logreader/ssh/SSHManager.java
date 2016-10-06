@@ -61,17 +61,20 @@ public class SSHManager extends Thread{
   }
 
 private int openAndReadLog(int result) {
-	int finalResult = 0; 
+	int finalResult = result; 
 	try{
 		  openSession();	
-		  finalResult = readLog();	  
+		  finalResult = readLog(finalResult);	  
 	      checkAuthenticationProtocolState(result);
 	  } catch(IOException e){
 		  LOGGER.log( Level.SEVERE, "", e );
+		  finalResult = 0;
 	  } catch(AuthenticationException e){
 		  LOGGER.log( Level.SEVERE, "", e );
+		  finalResult = 0;
 	  } catch (TerminalAllocationException e) {
 		  LOGGER.log( Level.SEVERE, "", e );
+		  finalResult = 0;
 	  } 
          
 	return finalResult;
@@ -93,17 +96,16 @@ private void openSession() throws IOException, TerminalAllocationException {
 	}
 }
 
-private int readLog() throws IOException {
-      int result = 0;
+private int readLog(int result) throws IOException {
+      int finalResult = result;
     
       if(session.startShell()) {
 		startReadingLog();
-      } else{
-        
+      } else{  
        LOGGER.log( Level.SEVERE, "Failed to start the users shell");
-       
+       finalResult = 0;     
       }
-	return result;
+	return finalResult;
 }
 
 private int authenticate() throws IOException {
