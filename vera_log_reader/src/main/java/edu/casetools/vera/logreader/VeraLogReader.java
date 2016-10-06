@@ -9,34 +9,38 @@ import edu.casetools.vera.logreader.ssh.SSHManager;
 public class VeraLogReader {
   
     private static final Logger LOGGER = Logger.getLogger( VeraLogReader.class.getName() );
-	protected SSHConfigs configs;
-	protected SSHManager ssh;
+	protected SSHConfigs sshConfigs;
+	protected SSHManager sshManager;
 	protected VeraLogDataManager dataManager;
 	
+	public VeraLogReader(){
+		
+	}
+	
 	public VeraLogReader(VeraLogDataManager dataManager,SSHConfigs configs){
-		ssh = new SSHManager(dataManager, configs);
-		this.configs = configs;
+		sshManager = new SSHManager(dataManager, configs);
+		this.sshConfigs = configs;
 		this.dataManager = dataManager;
 	}
 	
-	public void initialize (VeraLogDataManager dataManager,SSHConfigs configs){
-		ssh = new SSHManager(dataManager, configs);
-		this.configs = configs;
+	public void initialize (VeraLogDataManager dataManager,SSHConfigs sshConfigs){
+		sshManager = new SSHManager(dataManager, sshConfigs);
+		this.sshConfigs = sshConfigs;
 		this.dataManager = dataManager;
 	}
 	
 	
 	public void start(){
-		ssh.start();
+		sshManager.start();
 	}
 
 	
 	public void stop() {
 
 		try {
-			ssh.interrupt();
-			ssh.terminate();
-			ssh.join();
+			sshManager.interrupt();
+			sshManager.terminate();
+			sshManager.join();
 		} catch (InterruptedException e) {
             LOGGER.log( Level.SEVERE, "", e );
             Thread.currentThread().interrupt();
@@ -44,19 +48,19 @@ public class VeraLogReader {
 	}
 	
 	public SSHConfigs getConfigs() {
-		return configs;
+		return sshConfigs;
 	}
 
 	public void setConfigs(SSHConfigs configs) {
-		this.configs = configs;
+		this.sshConfigs = configs;
 	}
 	
 	public SSHManager getSshClient() {
-		return ssh;
+		return sshManager;
 	}
 
 	public void setSshClient(SSHManager ssh) {
-		this.ssh = ssh;
+		this.sshManager = ssh;
 	}
 	
 	public VeraLogDataManager getDataManager() {
