@@ -5,8 +5,13 @@ public class SSHConfigs {
 	private String  hostname;
 	private String  username;
 	private String  password;
+	private int		port;
 	private boolean silence;
 
+	public SSHConfigs(){
+		this.port = 22;
+	}
+	
 	public String getHostname() {
 		return hostname;
 	}
@@ -15,6 +20,14 @@ public class SSHConfigs {
 		this.hostname = hostname;
 	}
 
+	public void setPort(int port) {
+		this.port = port;
+	}
+	
+	public int getPort() {
+		return port;
+	}
+	
 	public String getUsername() {
 		return username;
 	}

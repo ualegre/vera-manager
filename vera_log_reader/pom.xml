@@ -41,31 +41,9 @@
 
 	<dependencies>	
 		<dependency>
-		    <groupId>sshtools</groupId>
-		    <artifactId>j2ssh-ant</artifactId>
-		    <version>0.2.9</version>
-		    <scope>compile</scope>
-		</dependency>
-		
-		<dependency>
-		    <groupId>sshtools</groupId>
-		    <artifactId>j2ssh-core</artifactId>
-		    <version>0.2.9</version>
-		   	<scope>compile</scope>
-		</dependency>
-		
-		<dependency>
-		    <groupId>sshtools</groupId>
-		    <artifactId>j2ssh-common</artifactId>
-		    <version>0.2.9</version>
-		    <scope>compile</scope>
-		</dependency>
-		
-		<dependency>
-		    <groupId>sshtools</groupId>
-		    <artifactId>j2ssh-daemon</artifactId>
-		    <version>0.2.9</version>
-		    <scope>compile</scope>
+		    <groupId>com.sshtools</groupId>
+		    <artifactId>j2ssh-maverick</artifactId>
+		    <version>1.5.4</version>
 		</dependency>
 				
 		<dependency>

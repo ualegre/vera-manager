@@ -4,206 +4,239 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.NoRouteToHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sshtools.j2ssh.SshClient;
-import com.sshtools.j2ssh.authentication.AuthenticationProtocolState;
-import com.sshtools.j2ssh.authentication.PasswordAuthenticationClient;
-import com.sshtools.j2ssh.session.SessionChannelClient;
+import com.sshtools.net.SocketTransport;
+import com.sshtools.ssh.ChannelOpenException;
+import com.sshtools.ssh.HostKeyVerification;
+import com.sshtools.ssh.SshAuthentication;
+import com.sshtools.ssh.SshClient;
+import com.sshtools.ssh.SshConnector;
+import com.sshtools.ssh.SshException;
+import com.sshtools.ssh.SshSession;
+import com.sshtools.ssh.components.SshPublicKey;
+import com.sshtools.ssh2.Ssh2PasswordAuthentication;
 
 import edu.casetools.vera.logreader.VeraLogDataManager;
 import edu.casetools.vera.logreader.ssh.exceptions.AuthenticationException;
 import edu.casetools.vera.logreader.ssh.exceptions.PartialAuthenticationException;
 import edu.casetools.vera.logreader.ssh.exceptions.TerminalAllocationException;
 
-
-
-public class SSHManager extends Thread{
-  
+public class SSHManager extends Thread {
 	private static final Logger LOGGER = Logger.getLogger( SSHManager.class.getName() );
 	private SSHConfigs sshConfigs;
 	private SshClient ssh;
-	private SessionChannelClient session;
+	private SshConnector con;
+	private SshSession session;
 	private BufferedReader br;
 	private VeraLogDataManager dataManager;
-	
+
+	private String command;
 	boolean running;
 	boolean initFinished;
 	boolean finalFinished;
 	int connectionStatus;
-	
-	
-   public SSHManager(VeraLogDataManager dataManager, SSHConfigs sshConfigs){
-	   
+
+
+	public SSHManager(VeraLogDataManager dataManager, SSHConfigs sshConfigs){
 		this.sshConfigs = sshConfigs;
 		this.dataManager = dataManager;
-	    initFinished = false;
+		initFinished = false;
 		finalFinished = false;
 		running = true;
 		connectionStatus = 0;
-
-  }
-	
-  public int initialize() throws IOException {
-
-	      ssh = new SshClient();
-	      ssh.connect(sshConfigs.getHostname());
-	      
-	      int result = authenticate();
-     
-	      if ( result == AuthenticationProtocolState.COMPLETE) 
-	    	result = openAndReadLog(result);
-	       
-	      else printSSHConfigsAuthenticationError();
-  		
-	        return result;
-  }
-
-private int openAndReadLog(int result) {
-	int finalResult = result; 
-	try{
-		  openSession();	
-		  finalResult = readLog(finalResult);	  
-	      checkAuthenticationProtocolState(result);
-	  } catch(IOException e){
-		  LOGGER.log( Level.SEVERE, "", e );
-		  finalResult = 0;
-	  } catch(AuthenticationException e){
-		  LOGGER.log( Level.SEVERE, "", e );
-		  finalResult = 0;
-	  } catch (TerminalAllocationException e) {
-		  LOGGER.log( Level.SEVERE, "", e );
-		  finalResult = 0;
-	  } 
-         
-	return finalResult;
-}
-
-private void checkAuthenticationProtocolState(int result) throws AuthenticationException {
-	if (result == AuthenticationProtocolState.PARTIAL){
-		throw new PartialAuthenticationException();
+		command = "";
 	}
-    if (result == AuthenticationProtocolState.FAILED){
-    	throw new AuthenticationException();
-    }
-}
 
-private void openSession() throws IOException, TerminalAllocationException {
-	session = ssh.openSessionChannel();	
-	if(!session.requestPseudoTerminal("vt100", 80, 24, 0, 0, "")){
-	  throw new TerminalAllocationException();
+	public void setCommand(String cmd) {
+		command = cmd;
 	}
-}
 
-private int readLog(int result) throws IOException {
-      int finalResult = result;
-    
-      if(session.startShell()) {
-		startReadingLog();
-      } else{  
-       LOGGER.log( Level.SEVERE, "Failed to start the users shell");
-       finalResult = 0;     
-      }
-	return finalResult;
-}
+	public int initialize() throws IOException, SshException {
+		con = SshConnector.createInstance();
+		HostKeyVerification hkv = new HostKeyVerification() {
+			public boolean verifyHost(String hostname, SshPublicKey key) {
+				return true;
+			}
+		};
+		con.getContext().setHostKeyVerification(hkv);
 
-private int authenticate() throws IOException {
-	PasswordAuthenticationClient pwAuth = new PasswordAuthenticationClient();
-	
-    pwAuth.setUsername(sshConfigs.getUsername());
-    pwAuth.setPassword(sshConfigs.getPassword());
-    return ssh.authenticate(pwAuth);
+		try {			
+			ssh = con.connect(new SocketTransport(sshConfigs.getHostname(), sshConfigs.getPort() ), sshConfigs.getHostname(), true);
+		}
+		catch(NoRouteToHostException nrhe) {
+			LOGGER.log(Level.SEVERE, "No route to host " + sshConfigs.getHostname() + ":" + sshConfigs.getPort() );
+			return SshAuthentication.FAILED;
+		}
 
-}
+		int result = authenticate();
+		if( result==SshAuthentication.COMPLETE )
+			result = openAndReadLog(result);
+		else {
+			printSSHConfigsAuthenticationError();
+		}
+		return result;
+	}
 
-private void startReadingLog() throws IOException {
-      OutputStream out = session.getOutputStream();
+	private int openAndReadLog(int result) {
+		int finalResult = result; 
+		try{
+			openSession();	
+			finalResult = readLog(finalResult);	  
+			checkAuthenticationProtocolState(result);
+		} catch(IOException e){
+			LOGGER.log( Level.SEVERE, "", e );
+			finalResult = 0;
+		} catch(AuthenticationException e){
+			LOGGER.log( Level.SEVERE, "", e );
+			finalResult = 0;
+		} catch (TerminalAllocationException e) {
+			LOGGER.log( Level.SEVERE, "", e );
+			finalResult = 0;
+		} catch (SshException e) {
+			e.printStackTrace();
+		} catch (ChannelOpenException e) {
+			e.printStackTrace();
+		}
 
-       String cmd = "tail -f  /var/log/cmh/LuaUPnP.log\n";
- 
-       out.write(cmd.getBytes()); 
-       
-       br = new BufferedReader(new InputStreamReader(session.getInputStream(),"US-ASCII"));
-}
+		return finalResult;
+	}
+
+	private void checkAuthenticationProtocolState(int result) throws AuthenticationException {
+		if (result == SshAuthentication.FURTHER_AUTHENTICATION_REQUIRED ){
+			throw new PartialAuthenticationException();
+		}
+		if (result == SshAuthentication.FAILED){
+			throw new AuthenticationException();
+		}
+	}
+
+	private void openSession() throws TerminalAllocationException, SshException, ChannelOpenException {
+		session = ssh.openSessionChannel();	
+		if(!session.requestPseudoTerminal("vt100", 80, 24, 0, 0)){
+			throw new TerminalAllocationException();
+		}
+	}
+
+	private int readLog(int result) throws IOException, SshException {
+		int finalResult = result;
+
+		if(session.startShell()) {
+			startReadingLog();
+		}
+		else{  
+			LOGGER.log( Level.SEVERE, "Failed to start the users shell");
+			finalResult = 0;     
+		}
+		return finalResult;
+	}
+
+	private int authenticate() throws SshException {
+		Ssh2PasswordAuthentication pwd = new Ssh2PasswordAuthentication();
+
+		pwd.setUsername( sshConfigs.getUsername() );
+		pwd.setPassword( sshConfigs.getPassword() );
+
+		return ssh.authenticate(pwd);
+	}
+
+	private void startReadingLog(String cmd) throws IOException {
+		OutputStream out = session.getOutputStream();
+
+		out.write(cmd.getBytes());
+
+		br = new BufferedReader(new InputStreamReader(session.getInputStream(), "US-ASCII"));		
+	}
+
+	private void startReadingLog() throws IOException {
+		if( command.equals("") )
+			command = "tail -f  /var/log/cmh/LuaUPnP.log\n";
+		startReadingLog(command);
+	}
 
 	private void printSSHConfigsAuthenticationError() {
-        LOGGER.log( Level.SEVERE, 
-            "AUTHENTICATION ERROR FOR: HOSTNAME"+sshConfigs.getHostname()+
-            " USER: "+sshConfigs.getUsername());
+		LOGGER.log( Level.SEVERE, 
+				"AUTHENTICATION ERROR FOR: HOSTNAME"+sshConfigs.getHostname()+
+				" USER: "+sshConfigs.getUsername());
 	}
 
-  @Override	
-  public void run() {
-    try {
-	  	connectionStatus = initialize();
-
-    	if( connectionStatus == AuthenticationProtocolState.COMPLETE){ 
-    		main();
-    		Thread.sleep(100);
-    	}
-    	initFinished = true;
-	     if ( connectionStatus == AuthenticationProtocolState.COMPLETE) {
-	         while (running)
-	         {
-	        	 	main();
-	
-	         }
-	      }
-	         session.close();
-	      
-    }
-    catch (Exception e) {
-      LOGGER.log( Level.SEVERE, "", e);
-    }
-  }
-  
-   @Override
-   public void interrupt(){
+	@Override	
+	public void run() {
 		try {
-	        LOGGER.log( Level.FINEST, "Interrupting SSH Connection");			
+			connectionStatus = initialize();
+
+			if( connectionStatus == SshAuthentication.COMPLETE){
+				LOGGER.log(Level.INFO, "Successfully connected");
+				main();
+				Thread.sleep(100);
+			}
+			initFinished = true;
+			if ( connectionStatus == SshAuthentication.COMPLETE) {
+				while ( running ) {
+					if( Thread.currentThread().isInterrupted() ) {
+						LOGGER.log(Level.WARNING, "interrupted");
+						break;
+					}
+					if( !main() )
+						break;
+				}
+			}
+
+		}
+		catch (Exception e) {
+			LOGGER.log( Level.SEVERE, "", e);
+		}
+	}
+
+	@Override
+	public void interrupt(){
+		try {
+			LOGGER.log( Level.FINEST, "Interrupting SSH Connection");			
 			ssh.disconnect();
 			session.close();
 			Thread.sleep(50);
-		} catch (IOException e) {
-	       LOGGER.log( Level.SEVERE, "SSH I/O Exception",e);
+			running = false;
 		} catch (InterruptedException e) {
-	       LOGGER.log( Level.SEVERE, "SSH Interrupted Exception",e);
-	       Thread.currentThread().interrupt();
+			LOGGER.log( Level.SEVERE, "SSH Interrupted Exception",e);
+			Thread.currentThread().interrupt();
 		}
 		super.interrupt();
 		finalFinished = true;
 	}
-  
-	private void main(){
-	    
+
+	private boolean main(){
+
 		try {
-			  String line = br.readLine();
-			  if(!sshConfigs.isSilence()){
-			    LOGGER.log( Level.SEVERE, line);
-			  }
-			  dataManager.readAndStoreLine(line);
-			  
+			String line = br.readLine();
+			if(!sshConfigs.isSilence()){
+				LOGGER.log( Level.SEVERE, line);
+			}
+			dataManager.readAndStoreLine(line);
+			return true;
+
 		} catch (IOException e) {
-          LOGGER.log( Level.SEVERE, "SSH I/O Exception",e);
+			LOGGER.log( Level.SEVERE, "SSH I/O Exception",e);
+			return false;
 		}
-	
+
 	}
-  
-    public boolean isInitializationFinished(){
-    	return initFinished;
-    }
-  
-    public boolean isFinalizationFinished(){
-    	return finalFinished;
-    }
-  
+
+	public boolean isInitializationFinished(){
+		return initFinished;
+	}
+
+	public boolean isFinalizationFinished(){
+		return finalFinished;
+	}
+
 	public void terminate(){
 		running = false;
 	}
 
 	public boolean checkConnection() {
-		return connectionStatus == AuthenticationProtocolState.COMPLETE;
+		return connectionStatus == SshAuthentication.COMPLETE;
 	}
-	
+
 }
