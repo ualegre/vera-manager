@@ -67,8 +67,11 @@ public class VeraLogReader {
 		return dataManager;
 	}
 
-
 	public void setDataManager(VeraLogDataManager dataManager) {
 		this.dataManager = dataManager;
+	}
+	
+	public boolean checkConnection(){
+		return sshManager.checkConnection();
 	}
 }
