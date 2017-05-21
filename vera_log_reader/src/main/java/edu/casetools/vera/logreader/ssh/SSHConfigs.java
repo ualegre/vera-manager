@@ -1,31 +1,27 @@
 package edu.casetools.vera.logreader.ssh;
 
 public class SSHConfigs {
-
-	private String  hostname;
+	public static SSHConfigs instance = null;
+	private int		port = 22;
 	private String  username;
 	private String  password;
-	private int		port;
 	private boolean silence;
 
-	public SSHConfigs(){
-		this.port = 22;
+	public SSHConfigs() {
 	}
 	
-	public String getHostname() {
-		return hostname;
-	}
-
-	public void setHostname(String hostname) {
-		this.hostname = hostname;
-	}
-
-	public void setPort(int port) {
-		this.port = port;
+	public static SSHConfigs getInstance() {
+		if( instance==null )
+			instance = new SSHConfigs();
+		return instance;
 	}
 	
 	public int getPort() {
 		return port;
+	}
+	
+	public void setPort(int port ) {
+		this.port = port;
 	}
 	
 	public String getUsername() {

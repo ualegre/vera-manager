@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.NoRouteToHostException;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,19 +21,20 @@ import com.sshtools.ssh.SshSession;
 import com.sshtools.ssh.components.SshPublicKey;
 import com.sshtools.ssh2.Ssh2PasswordAuthentication;
 
-import edu.casetools.vera.logreader.VeraLogDataManager;
 import edu.casetools.vera.logreader.ssh.exceptions.AuthenticationException;
 import edu.casetools.vera.logreader.ssh.exceptions.PartialAuthenticationException;
 import edu.casetools.vera.logreader.ssh.exceptions.TerminalAllocationException;
+import edu.casetools.vera.logreader.utils.Constants;
 
-public class SSHManager extends Thread {
+public class SSHManager extends Observable implements Runnable {
 	private static final Logger LOGGER = Logger.getLogger( SSHManager.class.getName() );
+	private static SSHManager instance = null;
 	private SSHConfigs sshConfigs;
 	private SshClient ssh;
 	private SshConnector con;
 	private SshSession session;
+
 	private BufferedReader br;
-	private VeraLogDataManager dataManager;
 
 	private String command;
 	boolean running;
@@ -39,15 +42,32 @@ public class SSHManager extends Thread {
 	boolean finalFinished;
 	int connectionStatus;
 
+	public static SSHManager getInstance() {
+		if( instance==null )
+			instance = new SSHManager();
+		return instance;
+	}
 
-	public SSHManager(VeraLogDataManager dataManager, SSHConfigs sshConfigs){
-		this.sshConfigs = sshConfigs;
-		this.dataManager = dataManager;
+	private SSHManager() {
+		LOGGER.setLevel(Level.ALL);
+		this.sshConfigs = SSHConfigs.getInstance();
+
 		initFinished = false;
 		finalFinished = false;
 		running = true;
 		connectionStatus = 0;
+
 		command = "";
+	}
+
+	private SSHManager(Observer dataManager) {
+		this();
+		registerObserver(dataManager);
+	}
+
+	public void registerObserver(Observer dataManager) {
+		if( dataManager!=null )
+			addObserver(dataManager);		
 	}
 
 	public void setCommand(String cmd) {
@@ -56,6 +76,7 @@ public class SSHManager extends Thread {
 
 	public int initialize() throws IOException, SshException {
 		con = SshConnector.createInstance();
+		// Lets do some host key verification
 		HostKeyVerification hkv = new HostKeyVerification() {
 			public boolean verifyHost(String hostname, SshPublicKey key) {
 				return true;
@@ -64,10 +85,10 @@ public class SSHManager extends Thread {
 		con.getContext().setHostKeyVerification(hkv);
 
 		try {			
-			ssh = con.connect(new SocketTransport(sshConfigs.getHostname(), sshConfigs.getPort() ), sshConfigs.getHostname(), true);
+			ssh = con.connect(new SocketTransport(Constants.hostname, sshConfigs.getPort() ), Constants.hostname, true);
 		}
 		catch(NoRouteToHostException nrhe) {
-			LOGGER.log(Level.SEVERE, "No route to host " + sshConfigs.getHostname() + ":" + sshConfigs.getPort() );
+			LOGGER.log(Level.SEVERE, "No route to host " + Constants.hostname + ":" + sshConfigs.getPort() );
 			return SshAuthentication.FAILED;
 		}
 
@@ -87,19 +108,21 @@ public class SSHManager extends Thread {
 			finalResult = readLog(finalResult);	  
 			checkAuthenticationProtocolState(result);
 		} catch(IOException e){
-			LOGGER.log( Level.SEVERE, "", e );
+			LOGGER.log( Level.SEVERE, e.getMessage() );
 			finalResult = 0;
 		} catch(AuthenticationException e){
-			LOGGER.log( Level.SEVERE, "", e );
+			LOGGER.log( Level.SEVERE, e.getMessage() );
 			finalResult = 0;
 		} catch (TerminalAllocationException e) {
-			LOGGER.log( Level.SEVERE, "", e );
+			LOGGER.log( Level.SEVERE, e.getMessage() );
 			finalResult = 0;
 		} catch (SshException e) {
 			e.printStackTrace();
+			finalResult = 0;
 		} catch (ChannelOpenException e) {
 			e.printStackTrace();
-		}
+			finalResult = 0;
+		} 
 
 		return finalResult;
 	}
@@ -113,8 +136,9 @@ public class SSHManager extends Thread {
 		}
 	}
 
-	private void openSession() throws TerminalAllocationException, SshException, ChannelOpenException {
+	private void openSession() throws IOException, TerminalAllocationException, SshException, ChannelOpenException {
 		session = ssh.openSessionChannel();	
+
 		if(!session.requestPseudoTerminal("vt100", 80, 24, 0, 0)){
 			throw new TerminalAllocationException();
 		}
@@ -125,15 +149,14 @@ public class SSHManager extends Thread {
 
 		if(session.startShell()) {
 			startReadingLog();
-		}
-		else{  
+		} else{
 			LOGGER.log( Level.SEVERE, "Failed to start the users shell");
 			finalResult = 0;     
 		}
 		return finalResult;
 	}
 
-	private int authenticate() throws SshException {
+	private int authenticate() throws IOException, SshException {
 		Ssh2PasswordAuthentication pwd = new Ssh2PasswordAuthentication();
 
 		pwd.setUsername( sshConfigs.getUsername() );
@@ -151,74 +174,80 @@ public class SSHManager extends Thread {
 	}
 
 	private void startReadingLog() throws IOException {
-		if( command.equals("") )
-			command = "tail -f  /var/log/cmh/LuaUPnP.log\n";
-		startReadingLog(command);
+		if( !command.equals("") )
+			startReadingLog( command );
 	}
 
 	private void printSSHConfigsAuthenticationError() {
 		LOGGER.log( Level.SEVERE, 
-				"AUTHENTICATION ERROR FOR: HOSTNAME"+sshConfigs.getHostname()+
-				" USER: "+sshConfigs.getUsername());
+				"AUTHENTICATION ERROR: hostname: "+ Constants.hostname +
+				" user: "+sshConfigs.getUsername());
 	}
 
 	@Override	
 	public void run() {
 		try {
 			connectionStatus = initialize();
-
-			if( connectionStatus == SshAuthentication.COMPLETE){
-				LOGGER.log(Level.INFO, "Successfully connected");
-				main();
-				Thread.sleep(100);
-			}
-			initFinished = true;
-			if ( connectionStatus == SshAuthentication.COMPLETE) {
-				while ( running ) {
-					if( Thread.currentThread().isInterrupted() ) {
-						LOGGER.log(Level.WARNING, "interrupted");
-						break;
-					}
-					if( !main() )
-						break;
-				}
-			}
-
 		}
 		catch (Exception e) {
-			LOGGER.log( Level.SEVERE, "", e);
+			LOGGER.log( Level.SEVERE, "exception on initialization", e );
 		}
+
+		if( connectionStatus == SshAuthentication.COMPLETE){
+			LOGGER.log(Level.INFO, "Successfully connected");
+			main();
+
+			try {
+				Thread.sleep(100);
+			}
+			catch (InterruptedException e) {
+				LOGGER.log( Level.SEVERE, "interrupt exception", e );
+			}
+		}
+		initFinished = true;
+		if ( connectionStatus == SshAuthentication.COMPLETE) {
+			while ( accessRunning(false, false) ) {
+				if( Thread.currentThread().isInterrupted() ) {
+					LOGGER.log(Level.WARNING, "interrupted");
+					break;
+				}
+				main();
+			}
+			close();
+		}
+
+
+		LOGGER.log( Level.SEVERE, "$ ssh manager finished $" );
 	}
 
-	@Override
-	public void interrupt(){
+	public void interrupt() {
+		accessRunning(true, false);
+	}
+
+	private void close() {
 		try {
-			LOGGER.log( Level.FINEST, "Interrupting SSH Connection");			
 			ssh.disconnect();
 			session.close();
 			Thread.sleep(50);
-			running = false;
-		} catch (InterruptedException e) {
-			LOGGER.log( Level.SEVERE, "SSH Interrupted Exception",e);
-			Thread.currentThread().interrupt();
 		}
-		super.interrupt();
+		catch (InterruptedException e) {
+			LOGGER.log( Level.SEVERE, "interrupted exception", e );
+		}
+
 		finalFinished = true;
 	}
 
-	private boolean main(){
+	private void main() {
 
 		try {
 			String line = br.readLine();
 			if(!sshConfigs.isSilence()){
-				LOGGER.log( Level.SEVERE, line);
+				setChanged();
+				notifyObservers(line);
 			}
-			dataManager.readAndStoreLine(line);
-			return true;
-
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			LOGGER.log( Level.SEVERE, "SSH I/O Exception",e);
-			return false;
 		}
 
 	}
@@ -231,12 +260,13 @@ public class SSHManager extends Thread {
 		return finalFinished;
 	}
 
-	public void terminate(){
-		running = false;
-	}
-
 	public boolean checkConnection() {
 		return connectionStatus == SshAuthentication.COMPLETE;
 	}
 
+	private synchronized boolean accessRunning(boolean wrt, boolean val) {
+		if( wrt )
+			running = val;
+		return running;
+	}
 }
