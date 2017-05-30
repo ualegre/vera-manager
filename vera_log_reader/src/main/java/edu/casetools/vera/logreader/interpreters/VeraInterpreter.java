@@ -6,30 +6,29 @@ public class VeraInterpreter {
 
 	private EventInterpreter eventInterpreter;
 	private VariableInterpreter variableInterpreter;
-	
+
 	public VeraInterpreter(){
 		eventInterpreter	 = new EventInterpreter();
 		variableInterpreter  = new VariableInterpreter();
 	}
-	
+
 	public VeraData interpret(String line){
 		VeraData data = new VeraData();
 		int id = interpretId(line);
 		data.setId(id);
 		switch(id){ 
-			case 6:
-					data.setVariable(variableInterpreter.translateVariable(line));
-				break;
-			case 7:
-					data.setEvent(eventInterpreter.translateEvent(line));
-				break;
-			default:
-				break;
+		case 6:
+			data.setVariable(variableInterpreter.translateVariable(line));
+			break;
+		case 7:
+			data.setEvent(eventInterpreter.translateEvent(line));
+			break;
+		default:
+			break;
 		}
 		return data;
-		
 	}
-	
+
 	public int interpretId(String line){
 		String[] id;
 
@@ -41,5 +40,5 @@ public class VeraInterpreter {
 		}
 		return -1;
 	}
-	
+
 }
