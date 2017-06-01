@@ -9,7 +9,6 @@ public class Constants {
 	public 			enum SWITCH_STATE {SWITCH_ON, SWITCH_OFF}
 	private 		static String LOCAL_SERVER_IP = "";
 	public final	static int LOCAL_SERVER_PORT = 6020;
-	private			static String position = "";
 	
 	public static void setLocalServerIP(String ip ) {
 		if( LOCAL_SERVER_IP.equals(""))
