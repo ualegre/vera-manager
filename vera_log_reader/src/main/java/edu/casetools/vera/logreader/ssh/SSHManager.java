@@ -24,7 +24,6 @@ import com.sshtools.ssh2.Ssh2PasswordAuthentication;
 import edu.casetools.vera.logreader.ssh.exceptions.AuthenticationException;
 import edu.casetools.vera.logreader.ssh.exceptions.PartialAuthenticationException;
 import edu.casetools.vera.logreader.ssh.exceptions.TerminalAllocationException;
-import edu.casetools.vera.logreader.utils.Constants;
 
 public class SSHManager extends Observable implements Runnable {
 	private static final Logger LOGGER = Logger.getLogger( SSHManager.class.getName() );
@@ -85,10 +84,10 @@ public class SSHManager extends Observable implements Runnable {
 		con.getContext().setHostKeyVerification(hkv);
 
 		try {			
-			ssh = con.connect(new SocketTransport(Constants.hostname, sshConfigs.getPort() ), Constants.hostname, true);
+			ssh = con.connect(new SocketTransport(sshConfigs.getHostname(), sshConfigs.getPort() ), sshConfigs.getHostname(), true);
 		}
 		catch(NoRouteToHostException nrhe) {
-			LOGGER.log(Level.SEVERE, "No route to host " + Constants.hostname + ":" + sshConfigs.getPort() );
+			LOGGER.log(Level.SEVERE, "No route to host " + sshConfigs.getHostname() + ":" + sshConfigs.getPort() );
 			return SshAuthentication.FAILED;
 		}
 
@@ -180,7 +179,7 @@ public class SSHManager extends Observable implements Runnable {
 
 	private void printSSHConfigsAuthenticationError() {
 		LOGGER.log( Level.SEVERE, 
-				"AUTHENTICATION ERROR: hostname: "+ Constants.hostname +
+				"AUTHENTICATION ERROR: hostname: "+ sshConfigs.getHostname() +
 				" user: "+sshConfigs.getUsername());
 	}
 

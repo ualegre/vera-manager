@@ -2,8 +2,6 @@ package edu.casetools.vera.logreader.data;
 
 import java.lang.reflect.Field;
 
-import edu.casetools.vera.logreader.utils.Constants;
-
 public class VeraVariable {
 	public static final String VAR_TRIPPED = "Tripped";
 	public static final String VAR_STATUS="Status";
@@ -101,18 +99,6 @@ public class VeraVariable {
 
 	}
 	
-	public String toString() {
-		return date + " " + time +
-				 //deviceId +
-				//" service=" + service +
-				"," +Constants.deviceID.get(deviceId)+
-				"," +Constants.deviceStatus.get(deviceId);
-				//"," +Constants.deviceState.get(deviceId)+ 
-				//","+date+ ","+time;
-				//" [" + variable + "] "+
-				//" was:" + oldValue +
-				//" now:" + newValue;
-				
-	}
+	
 }
 
