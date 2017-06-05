@@ -7,7 +7,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import edu.casetools.vera.logreader.VeraLogDataManager;
 import edu.casetools.vera.logreader.data.VeraData;
 import edu.casetools.vera.logreader.data.VeraVariable;
-import edu.casetools.vera.logreader.utils.Constants;
 
 public class SwitchableDevice extends VeraLogDataManager {
 	protected String devId;
@@ -23,7 +22,7 @@ public class SwitchableDevice extends VeraLogDataManager {
 
 	public SwitchableDevice( String deviceId, ArrayList<String> fails, int normal_use_time ) {
 		devId = deviceId;
-		deviceName = Constants.deviceID.get(devId);
+		deviceName = devId;
 		possibleFails = fails;
 		
 		NORMAL_USE_MS = normal_use_time;
@@ -39,7 +38,7 @@ public class SwitchableDevice extends VeraLogDataManager {
 		var = data.getVariable();
 		System.out.println( var.toString() );
 		
-		if( Constants.deviceID.containsKey(var.getDeviceId())) {
+		if( var.getDeviceId()!=null) {
 			
 		}
 		

@@ -2,6 +2,7 @@ package edu.casetools.vera.logreader.ssh;
 
 public class SSHConfigs {
 	public static SSHConfigs instance = null;
+	private String hostname;
 	private int		port = 22;
 	private String  username;
 	private String  password;
@@ -24,6 +25,15 @@ public class SSHConfigs {
 		this.port = port;
 	}
 	
+	
+	public String getHostname() {
+		return hostname;
+	}
+
+	public void setHostname(String hostname) {
+		this.hostname = hostname;
+	}
+
 	public String getUsername() {
 		return username;
 	}
