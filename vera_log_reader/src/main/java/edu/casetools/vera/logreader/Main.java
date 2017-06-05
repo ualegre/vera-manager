@@ -5,7 +5,6 @@ import java.util.Scanner;
 
 import edu.casetools.vera.logreader.implementation.SwitchableDevice;
 import edu.casetools.vera.logreader.ssh.SSHConfigs;
-import edu.casetools.vera.logreader.utils.Constants;
 
 public class Main {
 	
@@ -69,10 +68,7 @@ public class Main {
 		conf.setUsername("root");
 		conf.setPassword("smarthouse123");
 		conf.setPort(22);
-
-		Constants.setLocalServerIP("10.12.102.58");
-		Constants.hostname = "10.12.102.156";
-		
+		conf.setHostname("10.12.102.156");		
 		log.start();
 		
 		System.out.println("insert a number to close");

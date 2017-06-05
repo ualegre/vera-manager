@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 import edu.casetools.vera.logreader.VeraLogDataManager;
 import edu.casetools.vera.logreader.data.VeraData;
 import edu.casetools.vera.logreader.data.VeraVariable;
-import edu.casetools.vera.logreader.utils.Constants;
 
 public class VeraLogTest extends VeraLogDataManager {
 	private static final Logger LOGGER = Logger.getLogger( VeraLogTest.class.getName() );
@@ -25,9 +24,9 @@ public class VeraLogTest extends VeraLogDataManager {
 	protected void storeVeraVariable(VeraData data) {
 		VeraVariable var = data.getVariable();
 
-		if( Constants.deviceID.containsKey(var.getDeviceId()) /* valid monitored device */ && 
+		if( (var.getDeviceId()!=null) /* valid monitored device */ && 
 				(var.getVariable().equals("Status") || var.getVariable().equals("Tripped") )  ) {
-			LOGGER.log(Level.INFO, Constants.deviceID.get(var.getDeviceId()) + ": from "+ var.getOldValue() + " to " + var.getNewValue() + "\n");
+			LOGGER.log(Level.INFO, var.getDeviceId() + ": from "+ var.getOldValue() + " to " + var.getNewValue() + "\n");
 			
 			try {
 				SimpleDateFormat veraFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss.SSS");
