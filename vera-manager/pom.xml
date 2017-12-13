@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>edu.casetools</groupId>
+	<artifactId>vera-manager</artifactId>
+	<version>0.2.2</version>
+	<name>vera-manager</name>
+	<url>https://github.com/ualegre/vera-manager/</url>
+	<licenses>
+		<license>
+			<name>GNU General Public License</name>
+			<url>https://www.gnu.org/licenses/gpl-3.0.en.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
+	<scm>
+		<url>https://github.com/ualegre/vera_log_reader/</url>
+		<connection>scm:git:git://github.com//ualegre/vera_log_reader.git</connection>
+		<developerConnection>scm:git:git@github.com:ualegre/vera_log_reader.git</developerConnection>
+	</scm>
+
+	<developers>
+		<developer>
+			<email>u.alegre@mdx.ac.uk</email>
+			<name>Unai Alegre</name>
+			<url>https://github.com/ualegre</url>
+			<id>ualegre</id>
+		</developer>
+	</developers>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>	
+		<dependency>
+		    <groupId>com.sshtools</groupId>
+		    <artifactId>j2ssh-maverick</artifactId>
+		    <version>1.5.4</version>
+		</dependency>
+				
+		<dependency>
+		    <groupId>commons-logging</groupId>
+		    <artifactId>commons-logging</artifactId>
+		    <version>1.1.1</version>
+		</dependency>
+		
+	</dependencies>
+	
+	   <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+ 
+</project>

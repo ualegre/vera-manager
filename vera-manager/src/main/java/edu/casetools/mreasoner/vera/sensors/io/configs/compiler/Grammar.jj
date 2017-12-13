@@ -1,0 +1,259 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
+ */
+options
+{
+  JDK_VERSION = "1.8";
+  static = false;
+}
+
+PARSER_BEGIN(SSHConfigsReader)
+package edu.casetools.vera.logreader.io.configs.compiler;
+
+import java.io.FileReader;
+import edu.casetools.vera.logreader.io.configs.SSHConfigs;
+
+@SuppressWarnings("all")
+public class SSHConfigsReader
+{
+ public static void main(String[] args) { 
+try{ 
+SSHConfigsReader parser = new SSHConfigsReader (new FileReader("C:/Interface/configs.txt"));  
+        parser.readConfigs(); 
+
+}catch (Exception ex) 
+{ex.printStackTrace() ;} 
+} 
+
+}
+
+PARSER_END(SSHConfigsReader)
+
+SKIP: {     " " | "\t" | "\n" | "\r" | <"--" (~["\n","\r"])* ("\n"|"\r")> }
+
+SKIP:
+{
+        <"/*">: INSIDE_COMMENT
+}
+
+<INSIDE_COMMENT>
+SKIP:
+{
+        <"*/">: DEFAULT
+|       <~[]>
+}
+
+//////////////////////
+TOKEN:
+{
+  <QUOTE:"\""> : STRING_STATE
+}
+
+<STRING_STATE> MORE:
+{
+  "\\" : ESC_STATE
+}
+
+<STRING_STATE> TOKEN:
+{
+  <ENDQUOTE:<QUOTE>> : DEFAULT
+| <CHAR:~["\"","\\"]>
+}
+
+<ESC_STATE> TOKEN:
+{
+  <CNTRL_ESC:["\"","\\","/","b","f","n","r","t"]> : STRING_STATE
+}
+/////////////////////
+
+
+TOKEN : { <LEFT_BRACKET: "(" > }
+TOKEN : { <RIGHT_BRACKET: ")" > }
+TOKEN : { <POINT: "." > }
+TOKEN : { <COMMA: "," > }
+TOKEN : { <TWO_POINT: ":" > }
+TOKEN : { <SLASH: "/" > }
+TOKEN : { <COUNTER_SLASH: "\\" > }
+TOKEN : { <LOWER: "<" > }
+TOKEN : { <HIGHER: ">" > }
+TOKEN : { <HYPHEN: "-" > }
+ TOKEN : { < UNDERSCORE: ["_"] >	}
+TOKEN : { < DIGIT : [ "0"-"9" ] > }
+TOKEN : { < ALPHABET: ["a" - "z"] > }
+TOKEN : { < CAPSALPHABET: ["A" - "Z"] > }
+TOKEN : { <STRING: "'" (~["'"])* "'">   }
+TOKEN : { <TRUE: "TRUE" > }
+TOKEN : { <FALSE: "FALSE" > }
+
+
+TOKEN: { <HOSTNAME: "<HOSTNAME>" >}
+TOKEN: { <HOSTNAME_END: "</HOSTNAME>" >}
+
+TOKEN: { <PORT: "<PORT>" >}
+TOKEN: { <PORT_END: "</PORT>" >}
+
+TOKEN: { <USERNAME: "<USERNAME>" >}
+TOKEN: { <USERNAME_END: "</USERNAME>" >}
+
+TOKEN: { <PASSWORD: "<PASSWORD>" >}
+TOKEN: { <PASSWORD_END: "</PASSWORD>" >}
+
+TOKEN: { <SILENCE: "<SILENCE>" >}
+TOKEN: { <SILENCE_END: "</SILENCE>" >}
+
+
+SSHConfigs readConfigs(): {SSHConfigs configs = new SSHConfigs(); String aux = "";}
+{
+
+  <HOSTNAME> 
+  {
+    aux = readString();
+    configs.setHostname(aux);
+  }
+  <HOSTNAME_END>
+
+  <PORT>
+  {
+    aux = readInt();
+    configs.setPort(aux);
+  }
+  <PORT_END>
+
+  <USERNAME>
+  {
+    aux = readString();
+    configs.setUsername(aux);
+  }
+  <USERNAME_END>
+  
+  <PASSWORD>
+  {
+    aux = readString();
+    configs.setPassword(aux);
+  }
+  <PASSWORD_END>
+
+  <SILENCE>
+  (      <TRUE>
+	  {
+	    configs.setSilence(true);
+	  }
+	  | <FALSE>
+	  {
+		    configs.setSilence(false);
+ 	  }
+	)
+  <SILENCE_END>
+   
+  {
+    return configs;
+  }
+}
+
+String readInt(): 
+{
+ Token name;
+ String auxiliar = "";
+
+}
+{
+     ( name = <DIGIT>
+	 {
+	   auxiliar = auxiliar + name.toString();
+	 }
+	)*
+{
+return auxiliar;}
+}
+
+
+String readString(): 
+{
+ Token name;
+ String auxiliar = "";
+
+}
+{
+     ( name = <DIGIT>
+	 {
+	   auxiliar = auxiliar + name.toString();
+	 }
+	 | name = <ALPHABET> {
+	   auxiliar = auxiliar + name.toString();
+	 }
+	 | name = <UNDERSCORE> {
+	   auxiliar = auxiliar + name.toString();
+	 }
+	 | name = <CAPSALPHABET> {
+	   auxiliar = auxiliar + name.toString();
+	 }
+	 | name = <POINT> {
+	   auxiliar = auxiliar + name.toString();
+	 }
+	 | name = <LOWER> {
+	   auxiliar = auxiliar + name.toString();
+	 }
+	 | name = <HIGHER> {
+	   auxiliar = auxiliar + name.toString();
+	 }
+	 | name = <TWO_POINT> {
+	   auxiliar = auxiliar + name.toString();
+	 }
+	 | name = <SLASH> {
+	   auxiliar = auxiliar + name.toString();
+	 }
+	 | name = <COUNTER_SLASH> {
+	   auxiliar = auxiliar + name.toString();
+	 }
+	 | name = <HYPHEN> {
+	   auxiliar = auxiliar + name.toString();
+	 }
+	 | name = <COMMA> {
+	   auxiliar = auxiliar + name.toString();
+	 }
+	)*
+{
+return auxiliar;}
+}
+
+
+
+String rawString() :
+{
+  StringBuilder builder = new StringBuilder();
+}
+{
+  <QUOTE> ( getChar(builder) )* <ENDQUOTE>
+  {
+    return builder.toString();
+  }
+}
+
+void getChar(StringBuilder builder):
+{
+  Token t;
+}
+{
+  ( t = <CHAR> | t = <CNTRL_ESC> )
+  {
+    if (t.image.length() < 2)
+    {
+      // CHAR
+      builder.append(t.image.charAt(0));
+    }
+    else if (t.image.length() < 6)
+    {
+      // ESC
+      char c = t.image.charAt(1);
+      switch (c)
+      {
+        case 'b': builder.append((char) 8); break;
+        case 'f': builder.append((char) 12); break;
+        case 'n': builder.append((char) 10); break;
+        case 'r': builder.append((char) 13); break;
+        case 't': builder.append((char) 9); break;
+        default: builder.append(c);
+      }
+    }
+  }
+}
