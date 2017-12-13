@@ -1,4 +1,4 @@
-package edu.casetools.mreasoner.vera.sensors.io.configs;
+package edu.casetools.mreasoner.vera.sensors.ssh.configs;
 
 public class SSHConfigs {
 

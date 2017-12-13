@@ -3,7 +3,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import edu.casetools.mreasoner.vera.sensors.core.VeraLogDataObserver;
-import edu.casetools.mreasoner.vera.sensors.io.SSHManager;
+import edu.casetools.mreasoner.vera.sensors.ssh.SSHManager;
 
 public abstract class AbstractSensorManager {
 	private static final Logger LOGGER = Logger.getLogger( AbstractSensorManager.class.getName() );

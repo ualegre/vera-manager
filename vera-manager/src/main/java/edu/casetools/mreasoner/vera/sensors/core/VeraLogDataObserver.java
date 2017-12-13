@@ -9,7 +9,7 @@ import java.util.Observer;
 import edu.casetools.mreasoner.vera.sensors.core.data.VeraData;
 import edu.casetools.mreasoner.vera.sensors.core.data.VeraVariable;
 import edu.casetools.mreasoner.vera.sensors.core.interpreters.VeraInterpreter;
-import edu.casetools.mreasoner.vera.sensors.io.SSHManager;
+import edu.casetools.mreasoner.vera.sensors.ssh.SSHManager;
 
 public abstract class VeraLogDataObserver implements Observer {
 

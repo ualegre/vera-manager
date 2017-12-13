@@ -1,4 +1,4 @@
-package edu.casetools.mreasoner.vera.sensors.io.exceptions;
+package edu.casetools.mreasoner.vera.sensors.ssh.exceptions;
 
 public class AuthenticationException extends Exception {
 	

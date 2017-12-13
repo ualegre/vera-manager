@@ -1,4 +1,4 @@
-package edu.casetools.mreasoner.vera.sensors.io;
+package edu.casetools.mreasoner.vera.sensors.ssh;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -23,12 +23,12 @@ import com.sshtools.ssh.SshSession;
 import com.sshtools.ssh.components.SshPublicKey;
 import com.sshtools.ssh2.Ssh2PasswordAuthentication;
 
-import edu.casetools.mreasoner.vera.sensors.io.configs.SSHConfigs;
-import edu.casetools.mreasoner.vera.sensors.io.configs.compiler.ParseException;
-import edu.casetools.mreasoner.vera.sensors.io.configs.compiler.SSHConfigsReader;
-import edu.casetools.mreasoner.vera.sensors.io.exceptions.AuthenticationException;
-import edu.casetools.mreasoner.vera.sensors.io.exceptions.PartialAuthenticationException;
-import edu.casetools.mreasoner.vera.sensors.io.exceptions.TerminalAllocationException;
+import edu.casetools.mreasoner.vera.sensors.ssh.configs.SSHConfigs;
+import edu.casetools.mreasoner.vera.sensors.ssh.configs.compiler.ParseException;
+import edu.casetools.mreasoner.vera.sensors.ssh.configs.compiler.SSHConfigsReader;
+import edu.casetools.mreasoner.vera.sensors.ssh.exceptions.AuthenticationException;
+import edu.casetools.mreasoner.vera.sensors.ssh.exceptions.PartialAuthenticationException;
+import edu.casetools.mreasoner.vera.sensors.ssh.exceptions.TerminalAllocationException;
 
 public class SSHManager extends Observable implements Runnable {
 	private static final Logger LOGGER = Logger.getLogger( SSHManager.class.getName() );

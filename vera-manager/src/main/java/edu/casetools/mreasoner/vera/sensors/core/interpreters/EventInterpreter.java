@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import edu.casetools.mreasoner.vera.sensors.core.data.VeraEvent;
-import edu.casetools.mreasoner.vera.sensors.io.SSHManager;
+import edu.casetools.mreasoner.vera.sensors.ssh.SSHManager;
 
 
 
