@@ -2,7 +2,6 @@
 package edu.casetools.mreasoner.vera.sensors.ssh.configs.compiler;
 
 import java.io.FileReader;
-
 import edu.casetools.mreasoner.vera.sensors.ssh.configs.SSHConfigs;
 
 @SuppressWarnings("all")
@@ -23,7 +22,7 @@ SSHConfigsReader parser = new SSHConfigsReader (new FileReader("C:/Interface/con
     configs.setHostname(aux);
     jj_consume_token(HOSTNAME_END);
     jj_consume_token(PORT);
-    aux = readString();
+    aux = readInt();
     configs.setPort(aux);
     jj_consume_token(PORT_END);
     jj_consume_token(USERNAME);
@@ -54,10 +53,30 @@ SSHConfigsReader parser = new SSHConfigsReader (new FileReader("C:/Interface/con
     throw new Error("Missing return statement in function");
   }
 
-  final public String readString() throws ParseException {
+  final public String readInt() throws ParseException {
  Token name;
  String auxiliar = "";
     label_1:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case DIGIT:
+        ;
+        break;
+      default:
+        jj_la1[1] = jj_gen;
+        break label_1;
+      }
+      name = jj_consume_token(DIGIT);
+           auxiliar = auxiliar + name.toString();
+    }
+{if (true) return auxiliar;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public String readString() throws ParseException {
+ Token name;
+ String auxiliar = "";
+    label_2:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case POINT:
@@ -75,8 +94,8 @@ SSHConfigsReader parser = new SSHConfigsReader (new FileReader("C:/Interface/con
         ;
         break;
       default:
-        jj_la1[1] = jj_gen;
-        break label_1;
+        jj_la1[2] = jj_gen;
+        break label_2;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case DIGIT:
@@ -128,7 +147,7 @@ SSHConfigsReader parser = new SSHConfigsReader (new FileReader("C:/Interface/con
            auxiliar = auxiliar + name.toString();
         break;
       default:
-        jj_la1[2] = jj_gen;
+        jj_la1[3] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -140,7 +159,7 @@ SSHConfigsReader parser = new SSHConfigsReader (new FileReader("C:/Interface/con
   final public String rawString() throws ParseException {
   StringBuilder builder = new StringBuilder();
     jj_consume_token(QUOTE);
-    label_2:
+    label_3:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CHAR:
@@ -148,8 +167,8 @@ SSHConfigsReader parser = new SSHConfigsReader (new FileReader("C:/Interface/con
         ;
         break;
       default:
-        jj_la1[3] = jj_gen;
-        break label_2;
+        jj_la1[4] = jj_gen;
+        break label_3;
       }
       getChar(builder);
     }
@@ -168,7 +187,7 @@ SSHConfigsReader parser = new SSHConfigsReader (new FileReader("C:/Interface/con
       t = jj_consume_token(CNTRL_ESC);
       break;
     default:
-      jj_la1[4] = jj_gen;
+      jj_la1[5] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -202,7 +221,7 @@ SSHConfigsReader parser = new SSHConfigsReader (new FileReader("C:/Interface/con
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[5];
+  final private int[] jj_la1 = new int[6];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -210,10 +229,10 @@ SSHConfigsReader parser = new SSHConfigsReader (new FileReader("C:/Interface/con
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x60000000,0xfff0000,0xfff0000,0x3000,0x3000,};
+      jj_la1_0 = new int[] {0x60000000,0x2000000,0xfff0000,0xfff0000,0x3000,0x3000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -227,7 +246,7 @@ SSHConfigsReader parser = new SSHConfigsReader (new FileReader("C:/Interface/con
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -241,7 +260,7 @@ SSHConfigsReader parser = new SSHConfigsReader (new FileReader("C:/Interface/con
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -251,7 +270,7 @@ SSHConfigsReader parser = new SSHConfigsReader (new FileReader("C:/Interface/con
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -261,7 +280,7 @@ SSHConfigsReader parser = new SSHConfigsReader (new FileReader("C:/Interface/con
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -270,7 +289,7 @@ SSHConfigsReader parser = new SSHConfigsReader (new FileReader("C:/Interface/con
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -279,7 +298,7 @@ SSHConfigsReader parser = new SSHConfigsReader (new FileReader("C:/Interface/con
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -335,7 +354,7 @@ SSHConfigsReader parser = new SSHConfigsReader (new FileReader("C:/Interface/con
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 6; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

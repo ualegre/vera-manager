@@ -8,10 +8,10 @@ options
 }
 
 PARSER_BEGIN(SSHConfigsReader)
-package edu.casetools.vera.logreader.io.configs.compiler;
+package edu.casetools.mreasoner.vera.sensors.ssh.configs.compiler;
 
 import java.io.FileReader;
-import edu.casetools.vera.logreader.io.configs.SSHConfigs;
+import edu.casetools.mreasoner.vera.sensors.ssh.configs.SSHConfigs;
 
 @SuppressWarnings("all")
 public class SSHConfigsReader
@@ -82,8 +82,8 @@ TOKEN : { < DIGIT : [ "0"-"9" ] > }
 TOKEN : { < ALPHABET: ["a" - "z"] > }
 TOKEN : { < CAPSALPHABET: ["A" - "Z"] > }
 TOKEN : { <STRING: "'" (~["'"])* "'">   }
-TOKEN : { <TRUE: "TRUE" > }
-TOKEN : { <FALSE: "FALSE" > }
+TOKEN : { <TRUE: "true" > }
+TOKEN : { <FALSE: "false" > }
 
 
 TOKEN: { <HOSTNAME: "<HOSTNAME>" >}
