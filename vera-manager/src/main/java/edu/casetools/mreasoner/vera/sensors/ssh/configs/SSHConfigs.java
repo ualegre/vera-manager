@@ -58,4 +58,32 @@ public class SSHConfigs {
 		
 	}
 	
+	public String parseConfigs(){
+		String result = "";
+		
+		//SSH Info
+
+		result = result+"<HOSTNAME> \n";
+		result = result+getHostname()+"\n";
+		result = result+"</HOSTNAME> \n";
+		
+		result = result+"<PORT> \n";
+		result = result+getPort()+"\n";
+		result = result+"</PORT> \n";
+		
+		result = result+"<USERNAME> \n";
+		result = result+getUsername()+"\n";
+		result = result+"</USERNAME> \n";
+		
+		result = result+"<PASSWORD> \n";
+		result = result+getPassword()+"\n";
+		result = result+"</PASSWORD> \n";
+		
+		result = result+"<SILENCE> \n";
+		result = result+isSilence()+"\n";
+		result = result+"</SILENCE> \n";
+		
+		return result;	
+	}
+	
 }
