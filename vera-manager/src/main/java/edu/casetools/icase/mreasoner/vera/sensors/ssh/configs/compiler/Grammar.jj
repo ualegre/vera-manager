@@ -8,10 +8,10 @@ options
 }
 
 PARSER_BEGIN(SSHConfigsReader)
-package edu.casetools.mreasoner.vera.sensors.ssh.configs.compiler;
+package edu.casetools.icase.mreasoner.vera.sensors.ssh.configs.compiler;
 
 import java.io.FileReader;
-import edu.casetools.mreasoner.vera.sensors.ssh.configs.SSHConfigs;
+import edu.casetools.icase.mreasoner.vera.sensors.ssh.configs.SSHConfigs;
 
 @SuppressWarnings("all")
 public class SSHConfigsReader
@@ -82,9 +82,6 @@ TOKEN : { < DIGIT : [ "0"-"9" ] > }
 TOKEN : { < ALPHABET: ["a" - "z"] > }
 TOKEN : { < CAPSALPHABET: ["A" - "Z"] > }
 TOKEN : { <STRING: "'" (~["'"])* "'">   }
-TOKEN : { <TRUE: "true" > }
-TOKEN : { <FALSE: "false" > }
-
 
 TOKEN: { <HOSTNAME: "<HOSTNAME>" >}
 TOKEN: { <HOSTNAME_END: "</HOSTNAME>" >}
@@ -97,9 +94,6 @@ TOKEN: { <USERNAME_END: "</USERNAME>" >}
 
 TOKEN: { <PASSWORD: "<PASSWORD>" >}
 TOKEN: { <PASSWORD_END: "</PASSWORD>" >}
-
-TOKEN: { <SILENCE: "<SILENCE>" >}
-TOKEN: { <SILENCE_END: "</SILENCE>" >}
 
 
 SSHConfigs readConfigs(): {SSHConfigs configs = new SSHConfigs(); String aux = "";}
@@ -132,18 +126,6 @@ SSHConfigs readConfigs(): {SSHConfigs configs = new SSHConfigs(); String aux = "
     configs.setPassword(aux);
   }
   <PASSWORD_END>
-
-  <SILENCE>
-  (      <TRUE>
-	  {
-	    configs.setSilence(true);
-	  }
-	  | <FALSE>
-	  {
-		    configs.setSilence(false);
- 	  }
-	)
-  <SILENCE_END>
    
   {
     return configs;

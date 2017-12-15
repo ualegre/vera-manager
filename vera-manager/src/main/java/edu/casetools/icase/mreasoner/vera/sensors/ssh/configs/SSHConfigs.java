@@ -6,7 +6,6 @@ public class SSHConfigs {
 	private String	port;
 	private String  username;
 	private String  password;
-	private boolean silence;
 
 	public SSHConfigs() {
 		port = "22";
@@ -49,15 +48,6 @@ public class SSHConfigs {
 		this.password = password;
 	}
 	
-	public boolean isSilence(){
-		return silence;
-	}
-
-	public void setSilence(boolean silence) {
-		this.silence = silence;
-		
-	}
-	
 	public String parseConfigs(){
 		String result = "";
 		
@@ -78,10 +68,6 @@ public class SSHConfigs {
 		result = result+"<PASSWORD> \n";
 		result = result+getPassword()+"\n";
 		result = result+"</PASSWORD> \n";
-		
-		result = result+"<SILENCE> \n";
-		result = result+isSilence()+"\n";
-		result = result+"</SILENCE> \n";
 		
 		return result;	
 	}

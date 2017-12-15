@@ -49,29 +49,21 @@ public interface SSHConfigsReaderConstants {
   /** RegularExpression Id. */
   int STRING = 28;
   /** RegularExpression Id. */
-  int TRUE = 29;
+  int HOSTNAME = 29;
   /** RegularExpression Id. */
-  int FALSE = 30;
+  int HOSTNAME_END = 30;
   /** RegularExpression Id. */
-  int HOSTNAME = 31;
+  int PORT = 31;
   /** RegularExpression Id. */
-  int HOSTNAME_END = 32;
+  int PORT_END = 32;
   /** RegularExpression Id. */
-  int PORT = 33;
+  int USERNAME = 33;
   /** RegularExpression Id. */
-  int PORT_END = 34;
+  int USERNAME_END = 34;
   /** RegularExpression Id. */
-  int USERNAME = 35;
+  int PASSWORD = 35;
   /** RegularExpression Id. */
-  int USERNAME_END = 36;
-  /** RegularExpression Id. */
-  int PASSWORD = 37;
-  /** RegularExpression Id. */
-  int PASSWORD_END = 38;
-  /** RegularExpression Id. */
-  int SILENCE = 39;
-  /** RegularExpression Id. */
-  int SILENCE_END = 40;
+  int PASSWORD_END = 36;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -113,8 +105,6 @@ public interface SSHConfigsReaderConstants {
     "<ALPHABET>",
     "<CAPSALPHABET>",
     "<STRING>",
-    "\"true\"",
-    "\"false\"",
     "\"<HOSTNAME>\"",
     "\"</HOSTNAME>\"",
     "\"<PORT>\"",
@@ -123,8 +113,6 @@ public interface SSHConfigsReaderConstants {
     "\"</USERNAME>\"",
     "\"<PASSWORD>\"",
     "\"</PASSWORD>\"",
-    "\"<SILENCE>\"",
-    "\"</SILENCE>\"",
   };
 
 }

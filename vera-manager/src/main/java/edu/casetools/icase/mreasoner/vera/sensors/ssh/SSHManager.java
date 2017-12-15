@@ -258,10 +258,8 @@ public class SSHManager extends Observable implements Runnable {
 
 		try {
 			String line = br.readLine();
-			if(!sshConfigs.isSilence()){
 				setChanged();
 				notifyObservers(line);
-			}
 		}
 		catch (IOException e) {
 			LOGGER.log( Level.SEVERE, "SSH I/O Exception",e);
