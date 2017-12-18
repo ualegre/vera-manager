@@ -8,7 +8,10 @@ public class SSHConfigs {
 	private String  password;
 
 	public SSHConfigs() {
-		port = "22";
+		setHostname("<hostname>");
+		setPort("<port>");
+		setUsername("<username>");
+		setPassword("<password>");
 	}
 	
 	public String getPortAsString() {

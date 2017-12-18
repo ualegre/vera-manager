@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>edu.casetools</groupId>
 	<artifactId>vera-manager</artifactId>
-	<version>0.2.4</version>
+	<version>0.2.5</version>
 	<name>vera-manager</name>
 	<url>https://github.com/ualegre/vera-manager/</url>
 	<licenses>
