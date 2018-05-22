@@ -3,10 +3,7 @@ package edu.casetools.icase.mreasoner.vera.actuators;
 import java.util.Vector;
 
 import edu.casetools.icase.mreasoner.vera.actuators.data.Action;
-import edu.casetools.icase.mreasoner.vera.actuators.data.ActuatorConfigs;
 import edu.casetools.icase.mreasoner.vera.actuators.device.Actuator;
-
-
 
 public abstract class AbstractActuatorManager extends Thread{
 
@@ -23,18 +20,17 @@ public abstract class AbstractActuatorManager extends Thread{
 		while (running)
 		{
 			for(int i=0;i<actuators.size();i++){
-				Action action = readAction(actuators.get(i).getConfigs());				
+				Action action = readAction(actuators.get(i).getStateName());				
 				actuators.get(i).performAction(action);
 			}
 		}
 	}
 	
-	private Action readAction(ActuatorConfigs actuatorConfigs){
+	private Action readAction(String stateName){
 		Action action  = new Action();
-		String state   = actuatorConfigs.getState();
 
-		String device  = getDevice(state);
-		boolean status = getStatus(state);
+		String device  = getDevice(stateName);
+		boolean status = getStatus(stateName);
 		
 		if(device != null){
 			action.setDevice(device);

@@ -1,10 +1,19 @@
 package edu.casetools.icase.mreasoner.vera.actuators.device;
 
 import edu.casetools.icase.mreasoner.vera.actuators.data.Action;
-import edu.casetools.icase.mreasoner.vera.actuators.data.ActuatorConfigs;
 
-public interface Actuator {
+public abstract class Actuator {
+
+	private String stateName;
 	
-	public void performAction(Action action);
-	public ActuatorConfigs getConfigs();
+	public abstract void performAction(Action action);
+
+	public String getStateName() {
+		return stateName;
+	}
+
+	public void setStateName(String stateName) {
+		this.stateName = stateName;
+	}
+	
 }

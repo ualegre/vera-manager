@@ -29,10 +29,10 @@ public class SwitchableDevice extends VeraLogDataObserver {
 	}
 
 	@Override
-	protected void storeVeraEvent(VeraData data) { }
+	protected void handleVeraEvent(VeraData data) { }
 
 	@Override
-	protected void storeVeraVariable(VeraData data) {
+	protected void handleVeraVariable(VeraData data) {
 		VeraVariable var;
 
 		var = data.getVariable();

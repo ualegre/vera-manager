@@ -44,10 +44,10 @@ public abstract class VeraLogDataObserver implements Observer {
 	private void storeData(VeraData data) {
 		switch(data.getId()){
 		case 6:
-			storeVeraVariable(data);
+			handleVeraVariable(data);
 			break;
 		case 7:
-			storeVeraEvent(data);
+			handleVeraEvent(data);
 			break;
 		default:
 			break;
@@ -69,6 +69,6 @@ public abstract class VeraLogDataObserver implements Observer {
 		return 0;
 	}
 
-	protected abstract void storeVeraEvent(VeraData data);
-	protected abstract void storeVeraVariable(VeraData data);
+	protected abstract void handleVeraEvent(VeraData data);
+	protected abstract void handleVeraVariable(VeraData data);
 }

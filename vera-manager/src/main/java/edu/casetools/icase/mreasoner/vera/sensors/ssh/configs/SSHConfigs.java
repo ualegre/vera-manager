@@ -9,7 +9,7 @@ public class SSHConfigs {
 
 	public SSHConfigs() {
 		setHostname("<hostname>");
-		setPort("<port>");
+		setPort("22");
 		setUsername("<username>");
 		setPassword("<password>");
 	}

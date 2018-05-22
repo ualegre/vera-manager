@@ -5,13 +5,22 @@ import java.util.logging.Logger;
 import edu.casetools.icase.mreasoner.vera.sensors.core.VeraLogDataObserver;
 import edu.casetools.icase.mreasoner.vera.sensors.ssh.SSHManager;
 
-public abstract class AbstractSensorManager {
-	private static final Logger LOGGER = Logger.getLogger( AbstractSensorManager.class.getName() );
+public class VeraSensorManager {
+	private static final Logger LOGGER = Logger.getLogger( VeraSensorManager.class.getName() );
 	private SSHManager sshManager;
 	private Thread readerThread;
 	
-	protected AbstractSensorManager(String configsFileName) {
-		sshManager = SSHManager.getInstance(configsFileName);
+	public VeraSensorManager(String sshConfigsFilename) {
+		sshManager = SSHManager.getInstance(sshConfigsFilename);
+		sshManager.setCommand("tail -f  /var/log/cmh/LuaUPnP.log\n");
+	}
+	
+	public VeraSensorManager(){
+		
+	}
+	
+	public void initSSHManager(String sshConfigsFileName) {
+		sshManager = SSHManager.getInstance(sshConfigsFileName);
 		sshManager.setCommand("tail -f  /var/log/cmh/LuaUPnP.log\n");
 	}
 
